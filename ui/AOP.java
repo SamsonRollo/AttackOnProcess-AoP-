@@ -10,8 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
-
+import java.util.Random;
 import javax.swing.JPanel;
+
+//if paused, should cannot drag processor
+
 
 public class AOP extends JPanel{
     //private Score score;
@@ -21,13 +24,18 @@ public class AOP extends JPanel{
     private final int MENU_LOC_MUL = 32;
     private MainClass mainClass;
     private BufferedImage BG_IMG;
+    private ArrayList<Process> processes;
     private ArrayList<Processor> processors;
     private ArrayList<Bullet> bullets;
     private Rectangle[] dropPoints;
     private boolean[] hasProcessor;
-    private Thread bulletThread, processorThread;
-    private int speed = 50;
+    private Thread bulletThread, processThread;
+    private int speed = 5;
+    private int lag = 220;
+    private int level = 6;
     private boolean playBoolean = false;
+    private SpriteSheet procBody;
+    private SpriteSheet procTail;
 
     public AOP(MainClass mainClass){ //Score score
         this.mainClass = mainClass;
@@ -39,9 +47,10 @@ public class AOP extends JPanel{
 
     public void loadElements(){
         ImageLoader il = new ImageLoader(BG_IMG_PATH, "bg");
-        BG_IMG = il.getBuffImage();
 
-        bullets = new ArrayList<Bullet>();
+        BG_IMG = il.getBuffImage();
+        procBody = new SpriteSheet("src/pbodysprite.png", 55, 44);
+        procTail = new SpriteSheet("src/ptailsprite.png", 55, 44);
         processors = new ArrayList<Processor>();
         hasProcessor = new boolean[7];
         dropPoints = new Rectangle[7];
@@ -88,6 +97,7 @@ public class AOP extends JPanel{
             public void actionPerformed(ActionEvent e){
                 setPlay(true);
                 produceBullets();
+                produceProcesses();
             }
         });
 
@@ -111,7 +121,7 @@ public class AOP extends JPanel{
 
         quit.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //back to main menu
+                //record score and back to main menu
             }
         });
 
@@ -120,13 +130,11 @@ public class AOP extends JPanel{
         add(pause);
         add(upgrade);
         add(help);
-        add(quit);
-        //load the snake sprite her
-
-        
+        add(quit);       
     }
 
     private void produceBullets(){
+        bullets = new ArrayList<Bullet>();
         bulletThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -145,6 +153,25 @@ public class AOP extends JPanel{
         bulletThread.start();   
     }
 
+    private void produceProcesses(){
+        processes = new ArrayList<Process>();
+        processThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(isPlay()){
+                    updateProcess();
+                    createProcesses();
+                    
+                    updateUI();
+                    try{
+                        Thread.sleep(speed+100);
+                    } catch (InterruptedException e) {}
+                }
+            }
+        });  
+        processThread.start(); 
+    }
+
     public boolean isPlay(){
         return this.playBoolean;
     }
@@ -155,6 +182,30 @@ public class AOP extends JPanel{
 
     public ArrayList<Processor> getProcessors(){
         return this.processors;
+    }
+
+    public void updateProcess(){
+        for(Process p : processes)
+            p.update();
+    }
+
+    public void createProcesses(){
+        Random rand = new Random();
+        int spawnX = 640;
+        Rectangle lane = dropPoints[rand.nextInt(7)];
+        
+        if(rand.nextInt()%2==0 && !intersectProcess((int)lane.getY()+3)){ //and not intersect with existing process
+            Process p = new Process(getAOP(), level, spawnX, (int)lane.getY()+3, 44);
+            processes.add(p);
+            add(p);
+        }
+    }
+
+    public boolean intersectProcess(int spawnY){
+        for(Process p : processes)
+            if(p.getRectangle().contains(640, spawnY))
+                return true;
+        return false;
     }
 
     public void updateBullets(){
@@ -178,17 +229,17 @@ public class AOP extends JPanel{
     }
 
     public boolean intersectBullet(int dropY){
-        Rectangle bulletDropPoint = new Rectangle(198, dropY+18, 30, 17); //need change if change bullet dimension
+        Rectangle bulletDropPoint = new Rectangle(198, dropY+18, 24+lag, 17); //need change if change bullet dimension
         for(Bullet b: bullets)
             if((b.getRectangle()).intersects(bulletDropPoint))
                 return true;
         return false;
     }
 
-    public void removeBullet(){ //rely on alive method on bullet
+    public void removeBullet(){
         for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext();) {
             Bullet bullet = iterator.next();
-            if(!bullet.isAlive()){ //end of the lane
+            if(!bullet.isAlive()){
                 iterator.remove();
                 remove(bullet);
             }
@@ -232,6 +283,18 @@ public class AOP extends JPanel{
 
     public void setSpeed(int speed){
         this.speed = speed;
+    }
+
+    public SpriteSheet getBodySprite(){
+        return this.procBody;
+    }
+
+    public SpriteSheet getTailSprite(){
+        return this.procTail;
+    }
+
+    public AOP getAOP(){
+        return this;
     }
 
     @Override
