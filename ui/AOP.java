@@ -36,6 +36,7 @@ public class AOP extends JPanel{
     private boolean playBoolean = false;
     private SpriteSheet procBody;
     private SpriteSheet procTail;
+    private AOPButton play;
 
     public AOP(MainClass mainClass){ //Score score
         this.mainClass = mainClass;
@@ -51,6 +52,9 @@ public class AOP extends JPanel{
         BG_IMG = il.getBuffImage();
         procBody = new SpriteSheet("src/pbodysprite.png", 55, 44);
         procTail = new SpriteSheet("src/ptailsprite.png", 55, 44);
+
+        processes = new ArrayList<Process>();
+        bullets = new ArrayList<Bullet>();
         processors = new ArrayList<Processor>();
         hasProcessor = new boolean[7];
         dropPoints = new Rectangle[7];
@@ -61,7 +65,7 @@ public class AOP extends JPanel{
         for(int i=0, mult=55; i<7; i++)
             dropPoints[i] = new Rectangle(117, 67+mult*i, 81, 53);
 
-        AOPButton play = new AOPButton(MENU_LOC_X, MENU_LOC_Y, 84, 28);
+        play = new AOPButton(MENU_LOC_X, MENU_LOC_Y, 84, 28);
         AOPButton pause = new AOPButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL, 84, 28);
         AOPButton upgrade = new AOPButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*2, 84, 28);
         AOPButton help = new AOPButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*3, 84, 28);
@@ -96,6 +100,7 @@ public class AOP extends JPanel{
         play.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 setPlay(true);
+                play.setEnabled(false);
                 produceBullets();
                 produceProcesses();
             }
@@ -104,6 +109,7 @@ public class AOP extends JPanel{
         pause.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 setPlay(false);
+                play.setEnabled(true);
             }
         });
 
@@ -134,7 +140,6 @@ public class AOP extends JPanel{
     }
 
     private void produceBullets(){
-        bullets = new ArrayList<Bullet>();
         bulletThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -154,14 +159,13 @@ public class AOP extends JPanel{
     }
 
     private void produceProcesses(){
-        processes = new ArrayList<Process>();
         processThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(isPlay()){
                     updateProcess();
                     createProcesses();
-                    
+                    //delete process reaching starvation
                     updateUI();
                     try{
                         Thread.sleep(speed+100);

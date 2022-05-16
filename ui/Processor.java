@@ -28,9 +28,11 @@ public class Processor extends JLabel{
 
         addMouseMotionListener(new MouseMotionAdapter(){
             public void mouseDragged(MouseEvent e){
-                setDragged(true);
-                setCurrentPoint(getInitX() + e.getX()-22, getInitY() + e.getY()-22);
-                aop.updateUI();
+                if(aop.isPlay()){
+                    setDragged(true);
+                    setCurrentPoint(getInitX() + e.getX()-22, getInitY() + e.getY()-22);
+                    aop.updateUI();
+                }
             }
         });
 
