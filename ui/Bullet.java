@@ -34,12 +34,15 @@ public class Bullet extends JLabel{
         this.currentPoint.move(x, y);
     }
 
-    public void setAlive(boolean alive){
+    public void setAlive(boolean alive){ //hit the process
         this.alive = alive;
     }
 
     public boolean isAlive(){
-        return this.alive;
+        if((getX()+getW() >= 638) || !this.alive)
+            return false; 
+
+        return true;
     }
 
     public Point getCurrentPoint(){

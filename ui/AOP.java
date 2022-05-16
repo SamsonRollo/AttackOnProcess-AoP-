@@ -178,7 +178,7 @@ public class AOP extends JPanel{
     }
 
     public boolean intersectBullet(int dropY){
-        Rectangle bulletDropPoint = new Rectangle(198, dropY+18, 24, 17); //need change if change bullet dimension
+        Rectangle bulletDropPoint = new Rectangle(198, dropY+18, 30, 17); //need change if change bullet dimension
         for(Bullet b: bullets)
             if((b.getRectangle()).intersects(bulletDropPoint))
                 return true;
@@ -188,14 +188,10 @@ public class AOP extends JPanel{
     public void removeBullet(){ //rely on alive method on bullet
         for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext();) {
             Bullet bullet = iterator.next();
-            if(bullet.getX()+bullet.getW() >= 638){ //end of the lane
+            if(!bullet.isAlive()){ //end of the lane
                 iterator.remove();
                 remove(bullet);
             }
-            // if((bullet.getX()+bullet.getW()-3) >= 67){ //change 67 to process x coordinates
-            //     iterator.remove();
-            //     remove(bullet);
-            // }
         }
     }
 
