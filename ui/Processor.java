@@ -13,6 +13,7 @@ public class Processor extends JLabel{
     private Point initPoint;
     private Point currentPoint;
     private int w, h;
+    private boolean dragged = false;
 
     public Processor(AOP aop, int x, int y){
         this.aop = aop;
@@ -27,6 +28,7 @@ public class Processor extends JLabel{
 
         addMouseMotionListener(new MouseMotionAdapter(){
             public void mouseDragged(MouseEvent e){
+                setDragged(true);
                 setCurrentPoint(getInitX() + e.getX()-22, getInitY() + e.getY()-22);
                 aop.updateUI();
             }
@@ -46,9 +48,18 @@ public class Processor extends JLabel{
                 setLocation(drop);
                 setInitPoint(drop);
                 setCurrentPoint(drop);
+                setDragged(false);
                 aop.updateUI();
             }
         });
+    }
+
+    public void setDragged(boolean dragged){
+        this.dragged = dragged;
+    }
+
+    public boolean isDragged(){
+        return this.dragged;
     }
 
     private Point getDropLocation(int x, int y){

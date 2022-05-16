@@ -27,6 +27,7 @@ public class AOP extends JPanel{
     private boolean[] hasProcessor;
     private Thread bulletThread, processorThread;
     private int speed = 50;
+    private boolean playBoolean = false;
 
     public AOP(MainClass mainClass){ //Score score
         this.mainClass = mainClass;
@@ -85,7 +86,32 @@ public class AOP extends JPanel{
 
         play.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //add here
+                setPlay(true);
+                produceBullets();
+            }
+        });
+
+        pause.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                setPlay(false);
+            }
+        });
+
+        upgrade.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                //pop up upgrade menu
+            }
+        });
+
+        help.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                //pop up help menu
+            }
+        });
+
+        quit.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                //back to main menu
             }
         });
 
@@ -97,11 +123,18 @@ public class AOP extends JPanel{
         add(quit);
         //load the snake sprite her
 
+        
+    }
+
+    private void produceBullets(){
         bulletThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true){
-                    produceBullets();
+                while(isPlay()){
+                    updateBullets();
+                    createBullet();
+                    removeBullet();
+                    updateUI();
                 
                     try{
                         Thread.sleep(speed);
@@ -109,14 +142,15 @@ public class AOP extends JPanel{
                 }
             }
         });  
-        bulletThread.start();
+        bulletThread.start();   
     }
 
-    private void produceBullets(){
-        updateBullets();
-        createBullet();
-        removeBullet();
-        updateUI();
+    public boolean isPlay(){
+        return this.playBoolean;
+    }
+
+    public void setPlay(boolean playBoolean){
+        this.playBoolean = playBoolean;
     }
 
     public ArrayList<Processor> getProcessors(){
@@ -128,14 +162,17 @@ public class AOP extends JPanel{
             b.updateBullet();
     }
 
-    public void createBullet(){ //create bullet if previous bullet does not intersect the new
+    public void createBullet(){
         for(int i=0, mult=55; i<dropPoints.length; i++){
             Rectangle curDrop = dropPoints[i];
 
             if(hasProcessor[i] && !intersectBullet((int)curDrop.getY())){ //&& has process
-                Bullet b = new Bullet(198, 85+mult*i); 
-                bullets.add(b);
-                add(b);
+                Processor p = getProcessorAt((int)curDrop.getY()+3);
+                if(p!=null && !p.isDragged()){
+                    Bullet b = new Bullet(198, 85+mult*i); 
+                    bullets.add(b);
+                    add(b);
+                }
             }
         }
     }
@@ -160,10 +197,13 @@ public class AOP extends JPanel{
             //     remove(bullet);
             // }
         }
-        
-        for(Bullet b: bullets){
-            
-        }
+    }
+
+    public Processor getProcessorAt(int y){
+        for(Processor p : processors)
+            if(p.getInitY()==y)
+                return p;
+        return null;
     }
 
     public void setHasProcessorAt(int oldY, int newY){
