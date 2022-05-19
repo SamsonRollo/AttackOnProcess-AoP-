@@ -14,15 +14,16 @@ public class Process extends JPanel{
     private ProcessTail tail;
     private int h, w;
     private int burstTime;
+    private int score;
     private AOP aop;
     private int speed = 1;
+    private boolean alive = true;
 
     public Process(AOP aop, int level, int x, int y, int h){
         this.aop = aop;
         setLayout(null);
         setOpaque(false);
         loadElements(level);
-        //randomize the length of process and add thewidth to be the width of the panel
         setH(h);
         setCurrentPoint(x, y);
         setBounds(getX(), getY(), getW(), getH());
@@ -37,6 +38,7 @@ public class Process extends JPanel{
         add(head);
 
         this.burstTime = randomizeSelection((level+1)*5, 5);
+        this.score = this.burstTime;
 
         curWidth += head.getWidth();
         int numBody = (int)Math.floor(burstTime/5);
@@ -58,10 +60,11 @@ public class Process extends JPanel{
     public void update(){
         moveCurrentPoint(getX()-speed, getY());
         
-        for(ProcessBody pb: body)
-            pb.updateSprite();
-        tail.updateSprite();
-            //update position when burst time decrease by factor of 5
+        try{
+            for(ProcessBody pb: body)
+                pb.updateSprite();
+            tail.updateSprite();
+        }catch(Exception e){};
     }
 
     public int randomizeSelection(int max, int min){
@@ -70,14 +73,51 @@ public class Process extends JPanel{
 
     public void decrementBurstTime(int decrement){
         this.burstTime -= decrement;
+        
+        if(burstTime<0)
+            burstTime = 0;
+        int bodCount = (int)Math.floor(burstTime/5);
+        if(bodCount<body.size()){
+            ProcessBody last = body.get(body.size()-1);
+            tail.updatePosition(last.getX(), last.getY());
+            remove(last);
+            body.remove(last);
+            setW(getW()-55);
+        }
+    }
+
+    public int getProcessScore(){
+        return this.score;
     }
 
     public Rectangle getRectangle(){
         return new Rectangle(getX(), getY(), getW(), getH());
     }
+
+    public void setAlive(boolean alive){
+        this.alive = alive;
+    }
+
+    public boolean isAlive(){
+        if(burstTime<=0 || !this.alive)
+            return false; 
+
+        return true;
+    }
     
-    public void moveCurrentPoint(int x, int y){
-        this.currentPoint.move(x, y);
+    public void moveCurrentPoint(int x, int y){ //dont move if there is someone starving
+        if(x>198 && validProcessMove(this))
+            this.currentPoint.move(x, y);
+    }
+
+    public boolean validProcessMove(Process p){
+        for(Process proc : aop.getProcesses()){
+            if(proc==p)
+                continue;
+            if(proc.getRectangle().intersects(p.getRectangle()))
+                return false; 
+        }
+        return true;
     }
 
     public Point getCurrentPoint(){
@@ -114,5 +154,11 @@ public class Process extends JPanel{
 
     public void setH(int h){
         this.h = h;
+    }
+
+    public void sleep(){
+        try{
+            Thread.sleep(burstTime);
+        }catch(Exception e){}
     }
 }
