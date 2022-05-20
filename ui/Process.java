@@ -17,7 +17,10 @@ public class Process extends JPanel{
     private int score;
     private AOP aop;
     private int speed = 1; //variable speed
-    private boolean alive = true;
+    private boolean alive = true, starving = false;
+    private JLabel head;
+    private int spriteIdx = 0;
+    private int spriteLag = 0;
 
     public Process(AOP aop, int level, int x, int y, int h){
         this.aop = aop;
@@ -32,7 +35,7 @@ public class Process extends JPanel{
     public void loadElements(int level){
         int curWidth = 0;
         ImageLoader il = new ImageLoader(PROC1_IMG_PATH[randomizeSelection(1, 0)], "process");
-        JLabel head = new JLabel();
+        head = new JLabel();
         head.setIcon(new ImageIcon(il.getBuffImage()));
         head.setBounds(0, 0, il.getBuffImage().getWidth(), il.getBuffImage().getHeight());
         add(head);
@@ -59,7 +62,15 @@ public class Process extends JPanel{
 
     public void update(){
         moveCurrentPoint(getX()-speed, getY());
-        
+
+        if(isStarving()){
+            aop.getUpgrade().incrementStarvation();
+            if(spriteLag%20==0)
+                head.setIcon(new ImageIcon(aop.getStarveSprite().getSprites()[(spriteIdx++)%2]));
+            spriteLag++;
+            aop.updateAngerIMG();
+        }
+
         try{
             for(ProcessBody pb: body)
                 pb.updateSprite();
@@ -108,6 +119,8 @@ public class Process extends JPanel{
     public void moveCurrentPoint(int x, int y){ //dont move if there is someone starving
         if(x>198 && validProcessMove(this, x, y))
             this.currentPoint.move(x, y);
+        if(!isStarving() && x<=198)
+            setStarving(true);
     }
 
     public boolean validProcessMove(Process p, int x, int y){
@@ -119,6 +132,14 @@ public class Process extends JPanel{
                 return false; 
         }
         return true;
+    }
+
+    public boolean isStarving(){
+        return this.starving;
+    }
+
+    public void setStarving(boolean starving){
+        this.starving = starving;
     }
 
     public Point getCurrentPoint(){

@@ -12,7 +12,7 @@ public abstract class GameObject extends JLabel {
     protected Point currentPoint;
     protected Point initPoint;
     protected int w, h;
-    protected final int velocity = 2;
+    protected int velocity = 2;
     protected boolean alive = true;
 
     public void setGameObject(String alt, int x, int y){
@@ -48,6 +48,18 @@ public abstract class GameObject extends JLabel {
         if(!calculateAlive() || !this.alive)
             return false; 
         return true;
+    }
+
+    protected int getVelocity(){
+        return this.velocity;
+    }
+
+    protected void incrementVelocity(){
+        this.velocity++;
+    }
+
+    protected void incrementVelocity(int velocity){
+        this.velocity += velocity;
     }
 
     public Point getCurrentPoint(){

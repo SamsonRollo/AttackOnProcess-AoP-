@@ -23,7 +23,7 @@ public class AOP extends JPanel{
     private final int MENU_LOC_Y = 67;
     private final int MENU_LOC_MUL = 32;
     private MainClass mainClass;
-    private BufferedImage BG_IMG;
+    private BufferedImage BG_IMG, ANGER_IMG, CURR_ANGER;
     private ArrayList<Process> processes;
     private ArrayList<Processor> processors;
     private Rectangle[] dropPoints;
@@ -31,6 +31,7 @@ public class AOP extends JPanel{
     private boolean playBoolean = false;
     private SpriteSheet procBody;
     private SpriteSheet procTail;
+    private SpriteSheet procStarve;
     private AOPButton playBut;
     private Font font;
 
@@ -44,13 +45,19 @@ public class AOP extends JPanel{
 
     public void loadElements(){
         ImageLoader il = new ImageLoader("src/panel.png", "bg");
+        BG_IMG = il.getBuffImage();
+        il.reloadImage("src/anger.png", "anger");
+        ANGER_IMG = il.getBuffImage();
+        il = null;
 
         font = new Font("sans_serif", Font.BOLD, 18);
         score = new Score();
         upgrade = new Upgrade(1, 5, 1000, 1);
-        BG_IMG = il.getBuffImage();
         procBody = new SpriteSheet("src/pbodysprite.png", 55, 44);
         procTail = new SpriteSheet("src/ptailsprite.png", 55, 44);
+        procStarve = new SpriteSheet("src/starvesprite.png", 44, 44);
+
+        updateAngerIMG();
 
         processes = new ArrayList<Process>();
         processors = new ArrayList<Processor>();
@@ -229,9 +236,11 @@ public class AOP extends JPanel{
             if(b.getRectangle().intersects(p.getRectangle())){
                 b.setAlive(false);
                 p.decrementBurstTime(upgrade.getBulletLevel()*3);
-                if(!p.isAlive())
+                if(!p.isAlive()){
                     score.incrementScore(p.getProcessScore());
                     upgrade.incrementToken(p.getProcessScore());
+                    updateLevel();
+                }
                 return;
             }
         }
@@ -239,6 +248,13 @@ public class AOP extends JPanel{
 
     public void updateLevel(){
         this.upgrade.updateLevel(this.score.getScore());
+    }
+
+    public void updateAngerIMG(){
+        if(upgrade.getStarvationCount()<ANGER_IMG.getHeight())
+            CURR_ANGER = ANGER_IMG.getSubimage(0, ANGER_IMG.getHeight()-upgrade.getStarvationCount()-1, ANGER_IMG.getWidth(), upgrade.getStarvationCount()+1);
+        else
+            System.out.println("GAME OVER");//game over panel    
     }
 
     public int getSpeed(){
@@ -255,6 +271,10 @@ public class AOP extends JPanel{
 
     public SpriteSheet getTailSprite(){
         return this.procTail;
+    }
+
+    public SpriteSheet getStarveSprite(){
+        return this.procStarve;
     }
 
     public Rectangle[] getDropPoints(){
@@ -295,6 +315,8 @@ public class AOP extends JPanel{
         super.paintComponent(g);
 
         g.drawImage(BG_IMG, 0, 0, null);
+        g.drawImage(CURR_ANGER, 31, 248+ANGER_IMG.getHeight()-CURR_ANGER.getHeight(), null); 
+
         g.setColor(Color.white);
         g.setFont(font);
         g.drawString(String.valueOf(score.getScore()), 583, 45);

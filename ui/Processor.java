@@ -12,10 +12,12 @@ public class Processor extends GameObject{
     private boolean dragged = false;
     private ArrayList<Bullet> bullets;
     private Upgrade upgrade;
+    private int accumLagBul;
 
     public Processor(AOP aop, Upgrade upgrade, int x, int y){
         this.aop = aop;
         this.upgrade = upgrade;
+        accumLagBul = upgrade.getBulletLag();
         IMG_PATH = "src/cpu.png";
         setGameObject("cpu", x, y);
         setInitPoint(x, y);
@@ -54,7 +56,6 @@ public class Processor extends GameObject{
         Thread bulletThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                int accumLagBul = upgrade.getBulletLag();
                 while(aop.isPlay()){
                     updateBullets();
                     if(accumLagBul>= upgrade.getBulletLag()){
@@ -76,6 +77,8 @@ public class Processor extends GameObject{
 
     public void updateBullets(){
         for(Bullet b : bullets){
+            // if(upgrade.getLevel()%3==0 && incBullValid)
+            //     b.incrementVelocity();
             b.updateBullet();
             aop.processHit(b);
         }

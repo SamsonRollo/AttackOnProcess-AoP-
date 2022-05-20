@@ -120,8 +120,8 @@ public class UpgradePanel extends JPanel {
         g.setFont(font);
         g.setColor(Color.white);
         g.drawString(String.valueOf(upgrade.getToken()), 265, 127);
-        g.drawString(String.valueOf(upgrade.getCoreCost()), 247, 219);
-        g.drawString(String.valueOf(upgrade.getBulletCost()), 247, 345);
+        g.drawString(upgrade.getCoreCostStr(), 247, 219);
+        g.drawString(upgrade.getBulletCostStr(), 247, 345);
 
         for(int i=0; i<upgrade.getNumCore(); i++)
             g.drawImage(coreImage, 197+(55*i), 235, null);

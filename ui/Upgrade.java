@@ -11,14 +11,16 @@ public class Upgrade {
     private int processLag;
     private int level;
     private int bulletLevel;
+    private int starvation;
 
     public Upgrade(int numProc, int speed, int bulletLag, int level){
         this.speedPowerup = speed;
         this.numberOfCores = numProc;
         this.bulletLag = bulletLag;
         this.level = level;
-        this.tokens = 10000;
+        this.tokens = 0;
         this.bulletLevel = 1;
+        this.starvation = 0;
     }
 
     public void incrementNumCore(AOP aop) throws CoreIncrementException{
@@ -47,7 +49,8 @@ public class Upgrade {
     }
 
     public void updateLevel(int score){
-        this.level = (int)Math.floor(score/52); 
+        int curlevel = (int)Math.floor(score/52)+1;
+        this.level = curlevel > this.level ? curlevel : this.level; 
     }
 
     public int getNumCore(){
@@ -64,6 +67,14 @@ public class Upgrade {
 
     public int getBulletLag(){
         return this.bulletLag;
+    }
+
+    public void incrementStarvation(){
+        this.starvation++;
+    }
+
+    public int getStarvationCount(){
+        return (int)Math.floor(this.starvation/23);
     }
 
     public void incrementSpeed(){
@@ -87,7 +98,7 @@ public class Upgrade {
     }
 
     public int getProcessLag(){
-        return (int)Math.floor(280/this.level);
+        return (int)Math.floor(400/this.level);
     }
 
     public int getLevelVariable(){ //edit
@@ -123,10 +134,28 @@ public class Upgrade {
     }
 
     public int getCoreCost(){
-        return this.numberOfCores * 631 + 12;
+        if(numberOfCores>=4)
+            return 0;
+        return this.numberOfCores * 421 + 12;
     }
 
     public int getBulletCost(){
-        return this.bulletLevel * 589 + 13;
+        if(bulletLevel>=3)
+            return 0;
+        return this.bulletLevel * 512 + 13;
+    }
+
+    public String getCoreCostStr(){
+        int cost = getCoreCost();
+        if(cost==0)
+            return "";
+        return String.valueOf(cost);
+    }
+
+    public String getBulletCostStr(){
+        int cost = getBulletCost();
+        if(cost==0)
+            return "";
+        return String.valueOf(cost);
     }
 }
