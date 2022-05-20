@@ -3,7 +3,6 @@ package ui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -27,7 +26,6 @@ public class AOP extends JPanel{
     private BufferedImage BG_IMG;
     private ArrayList<Process> processes;
     private ArrayList<Processor> processors;
-    private ArrayList<Bullet> bullets;
     private Rectangle[] dropPoints;
     private boolean[] hasProcessor;
     private boolean playBoolean = false;
@@ -55,12 +53,11 @@ public class AOP extends JPanel{
         procTail = new SpriteSheet("src/ptailsprite.png", 55, 44);
 
         processes = new ArrayList<Process>();
-        bullets = new ArrayList<Bullet>();
         processors = new ArrayList<Processor>();
         hasProcessor = new boolean[7];
         dropPoints = new Rectangle[7];
 
-        processors.add(new Processor(this, 135, 70));
+        processors.add(new Processor(this, upgrade, 135, 70));
         hasProcessor[0] = true;
 
         for(int i=0, mult=55; i<7; i++)
@@ -112,8 +109,9 @@ public class AOP extends JPanel{
 
         upgradeBut.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                UpgradePanel ugPanel = new UpgradePanel(getAOP(), upgrade, font, isPlay());
+                boolean playBol = isPlay();
                 setPlay(false);
+                UpgradePanel ugPanel = new UpgradePanel(getAOP(), upgrade, font, playBol);
                 getAOP().setVisible(false);
                 mainClass.add(ugPanel);
             }
@@ -143,7 +141,8 @@ public class AOP extends JPanel{
         setPlay(status);
         playBut.setEnabled(!status);
         if(status){
-            produceBullets();
+            for(Processor p : processors)
+                p.produceBullets();
             produceProcesses();
         }
     }
@@ -214,77 +213,6 @@ public class AOP extends JPanel{
         }
     }
 
-    private void produceBullets(){
-        Thread bulletThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int accumLagBul = upgrade.getBulletLag();
-                while(isPlay()){
-                    updateBullets();
-                    if(accumLagBul>= upgrade.getBulletLag()){
-                        createBullet();
-                        accumLagBul = 0;
-                    }
-                    removeBullet();
-                    updateUI();
-                    accumLagBul+=upgrade.getSpeed();
-
-                    try{
-                        Thread.sleep(upgrade.getSpeed());
-                    } catch (InterruptedException e) {}
-                }
-            }
-        });  
-        bulletThread.start();   
-    }
-
-    public void updateBullets(){
-        for(Bullet b : bullets){
-            b.updateBullet();
-            processHit(b);
-        }
-    }
-
-    public void createBullet(){
-        for(int i=0, mult=55; i<dropPoints.length; i++){
-            Rectangle curDrop = dropPoints[i];
-
-            if(hasProcessor[i] && !intersectBullet((int)curDrop.getY())){
-                Processor p = getProcessorAt((int)curDrop.getY()+3);
-                if(p!=null && !p.isDragged()){
-                    Bullet b = new Bullet(upgrade.getBulletLevel(), 198, 85+mult*i); 
-                    bullets.add(b);
-                    add(b);
-                }
-            }
-        }
-    }
-
-    public boolean intersectBullet(int dropY){
-        Rectangle bulletDropPoint = new Rectangle(198, dropY+18, 30, 17); //need change if change bullet dimension
-        for(Bullet b: bullets)
-            if((b.getRectangle()).intersects(bulletDropPoint))
-                return true;
-        return false;
-    }
-
-    public void removeBullet(){
-        for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext();) {
-            Bullet bullet = iterator.next();
-            if(!bullet.isAlive()){
-                iterator.remove();
-                remove(bullet);
-            }
-        }
-    }
-
-    public Processor getProcessorAt(int y){
-        for(Processor p : processors)
-            if(p.getInitY()==y)
-                return p;
-        return null;
-    }
-
     public void setHasProcessorAt(int oldY, int newY){
         for(int i=0; i<dropPoints.length; i++){
             if((int)dropPoints[i].getY()+3 == oldY){
@@ -307,6 +235,10 @@ public class AOP extends JPanel{
                 return;
             }
         }
+    }
+
+    public void updateLevel(){
+        this.upgrade.updateLevel(this.score.getScore());
     }
 
     public int getSpeed(){
@@ -340,6 +272,10 @@ public class AOP extends JPanel{
     public void addProcessor(Processor cpu){
         processors.add(cpu);
         add(cpu);
+    }
+
+    public Upgrade getUpgrade(){
+        return this.upgrade;
     }
 
     public AOP getAOP(){

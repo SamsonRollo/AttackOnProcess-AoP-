@@ -16,7 +16,7 @@ public class Process extends JPanel{
     private int burstTime;
     private int score;
     private AOP aop;
-    private int speed = 1;
+    private int speed = 1; //variable speed
     private boolean alive = true;
 
     public Process(AOP aop, int level, int x, int y, int h){
@@ -37,7 +37,7 @@ public class Process extends JPanel{
         head.setBounds(0, 0, il.getBuffImage().getWidth(), il.getBuffImage().getHeight());
         add(head);
 
-        this.burstTime = randomizeSelection((level+1)*5, 5);
+        this.burstTime = randomizeSelection((level+2)*5, 5);
         this.score = this.burstTime;
 
         curWidth += head.getWidth();
@@ -106,15 +106,16 @@ public class Process extends JPanel{
     }
     
     public void moveCurrentPoint(int x, int y){ //dont move if there is someone starving
-        if(x>198 && validProcessMove(this))
+        if(x>198 && validProcessMove(this, x, y))
             this.currentPoint.move(x, y);
     }
 
-    public boolean validProcessMove(Process p){
+    public boolean validProcessMove(Process p, int x, int y){
         for(Process proc : aop.getProcesses()){
             if(proc==p)
                 continue;
-            if(proc.getRectangle().intersects(p.getRectangle()))
+            Rectangle movedP = new Rectangle(x,y,p.getW(), p.getH());
+            if(proc.getRectangle().intersects(movedP))
                 return false; 
         }
         return true;

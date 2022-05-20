@@ -5,12 +5,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Processor extends GameObject{
     private boolean dragged = false;
+    private ArrayList<Bullet> bullets;
+    private Upgrade upgrade;
 
-    public Processor(AOP aop, int x, int y){
+    public Processor(AOP aop, Upgrade upgrade, int x, int y){
         this.aop = aop;
+        this.upgrade = upgrade;
         IMG_PATH = "src/cpu.png";
         setGameObject("cpu", x, y);
         setInitPoint(x, y);
@@ -40,6 +45,66 @@ public class Processor extends GameObject{
                 setDragged(false);
             }
         });
+
+        bullets = new ArrayList<Bullet>();
+        produceBullets();
+    }
+
+    public void produceBullets(){
+        Thread bulletThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int accumLagBul = upgrade.getBulletLag();
+                while(aop.isPlay()){
+                    updateBullets();
+                    if(accumLagBul>= upgrade.getBulletLag()){
+                        createBullet();
+                        accumLagBul = 0;
+                    }
+                    removeBullet();
+                    aop.updateUI();
+                    accumLagBul+=upgrade.getSpeed();
+
+                    try{
+                        Thread.sleep(upgrade.getSpeed());
+                    } catch (InterruptedException e) {}
+                }
+            }
+        });  
+        bulletThread.start();   
+    }
+
+    public void updateBullets(){
+        for(Bullet b : bullets){
+            b.updateBullet();
+            aop.processHit(b);
+        }
+    }
+
+    public void createBullet(){
+            if(!intersectBullet(getY()-3) && !isDragged()){
+                Bullet b = new Bullet(upgrade.getBulletLevel(), 198, getY()+18); 
+                bullets.add(b);
+                aop.add(b);
+            }
+    }
+
+    public void removeBullet(){
+        for (Iterator<Bullet> iterator = bullets.iterator(); iterator.hasNext();) {
+            Bullet bullet = iterator.next();
+            if(!bullet.isAlive()){
+                iterator.remove();
+                aop.remove(bullet);
+            }
+        }
+    }
+
+    public boolean intersectBullet(int dropY){
+        Rectangle bulletDropPoint = new Rectangle(198, dropY+18, 30, 17); //need change if change bullet dimension
+        for(Bullet b: bullets)
+            if((b.getRectangle()).intersects(bulletDropPoint))
+                return true;
+        return false;
     }
 
     public void setDragged(boolean dragged){

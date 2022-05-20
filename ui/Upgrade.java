@@ -30,7 +30,7 @@ public class Upgrade {
         if(loc==null)
             throw new CoreIncrementException("Cannot add core!");
         
-        Processor newCPU = new Processor(aop, (int)loc.getX()+18, (int)loc.getY()+3);
+        Processor newCPU = new Processor(aop, aop.getUpgrade(), (int)loc.getX()+18, (int)loc.getY()+3);
         aop.addProcessor(newCPU);
     }
 
@@ -39,10 +39,15 @@ public class Upgrade {
         for(int i = 0; i<aop.getDropPoints().length; i++){
             if(!aop.getHasProcessor()[i]){
                 r = aop.getDropPoints()[i];
+                aop.getHasProcessor()[i] = true;
                 break;
             }
         }
         return r;
+    }
+
+    public void updateLevel(int score){
+        this.level = (int)Math.floor(score/52); 
     }
 
     public int getNumCore(){
@@ -82,7 +87,7 @@ public class Upgrade {
     }
 
     public int getProcessLag(){
-        return (int)Math.floor(1000/this.level);
+        return (int)Math.floor(280/this.level);
     }
 
     public int getLevelVariable(){ //edit
@@ -118,10 +123,10 @@ public class Upgrade {
     }
 
     public int getCoreCost(){
-        return this.numberOfCores * 543 + 12;
+        return this.numberOfCores * 631 + 12;
     }
 
     public int getBulletCost(){
-        return this.bulletLevel * 356 + 13;
+        return this.bulletLevel * 589 + 13;
     }
 }
