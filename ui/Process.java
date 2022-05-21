@@ -16,7 +16,7 @@ public class Process extends JPanel{
     private int burstTime;
     private int score;
     private AOP aop;
-    private int speed = 1; //variable speed
+    private int speed = 1;
     private boolean alive = true, starving = false;
     private JLabel head;
     private int spriteIdx = 0;
@@ -65,8 +65,10 @@ public class Process extends JPanel{
 
         if(isStarving()){
             aop.getUpgrade().incrementStarvation();
-            if(spriteLag%20==0)
+            if(spriteLag%20==0){
                 head.setIcon(new ImageIcon(aop.getStarveSprite().getSprites()[(spriteIdx++)%2]));
+                decrementBurstTime(1);
+            }
             spriteLag++;
             aop.updateAngerIMG();
         }
@@ -116,11 +118,13 @@ public class Process extends JPanel{
         return true;
     }
     
-    public void moveCurrentPoint(int x, int y){ //dont move if there is someone starving
+    public void moveCurrentPoint(int x, int y){
         if(x>198 && validProcessMove(this, x, y))
             this.currentPoint.move(x, y);
-        if(!isStarving() && x<=198)
+        if(!isStarving() && x<=198){
             setStarving(true);
+            this.score = (int)Math.floor(this.score/2);
+        }
     }
 
     public boolean validProcessMove(Process p, int x, int y){

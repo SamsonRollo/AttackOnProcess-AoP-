@@ -69,8 +69,16 @@ public class Upgrade {
         return this.bulletLag;
     }
 
+    public void setStarvation(int starvation){
+        this.starvation = starvation;
+    }
+
     public void incrementStarvation(){
         this.starvation++;
+    }
+
+    public int getStarvationRealCount(){
+        return this.starvation;
     }
 
     public int getStarvationCount(){
@@ -99,10 +107,6 @@ public class Upgrade {
 
     public int getProcessLag(){
         return (int)Math.floor(400/this.level);
-    }
-
-    public int getLevelVariable(){ //edit
-        return this.level;
     }
 
     public int getBulletLevel(){

@@ -36,7 +36,7 @@ public class UpgradePanel extends JPanel {
 
         AOPButton buyCPU = new AOPButton(340, 172, 84, 28);
         AOPButton buyBullet = new AOPButton(389, 298, 84, 28);
-        AOPButton back = new AOPButton(308, 394, 84, 28);
+        AOPButton back = new AOPButton(600, 34, 84, 28);
 
         buyCPU.setIcons(
             "src/normal/buy.png",

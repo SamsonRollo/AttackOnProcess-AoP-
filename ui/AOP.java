@@ -34,6 +34,7 @@ public class AOP extends JPanel{
     private SpriteSheet procStarve;
     private AOPButton playBut;
     private Font font;
+    private PowerUp powUp = null;
 
     public AOP(MainClass mainClass){ //Score score
         this.mainClass = mainClass;
@@ -126,7 +127,11 @@ public class AOP extends JPanel{
 
         helpBut.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //pop up help menu
+                boolean playBol = isPlay();
+                setPlay(false);
+                HelpPanel hePanel = new HelpPanel(getAOP(), playBol);
+                getAOP().setVisible(false);
+                mainClass.add(hePanel);
             }
         });
 
@@ -148,6 +153,7 @@ public class AOP extends JPanel{
         setPlay(status);
         playBut.setEnabled(!status);
         if(status){
+            producePowerUps();
             for(Processor p : processors)
                 p.produceBullets();
             produceProcesses();
@@ -220,6 +226,19 @@ public class AOP extends JPanel{
         }
     }
 
+    public void setAllProcessDead(){
+        for(Process p : processes)
+            p.setAlive(false);
+    }
+
+    public void removeProcessor(){
+        for (Iterator<Processor> iterator = processors.iterator(); iterator.hasNext();) {
+            Processor processor = iterator.next();
+            iterator.remove();
+            remove(processor);
+        }
+    }
+
     public void setHasProcessorAt(int oldY, int newY){
         for(int i=0; i<dropPoints.length; i++){
             if((int)dropPoints[i].getY()+3 == oldY){
@@ -246,6 +265,40 @@ public class AOP extends JPanel{
         }
     }
 
+    public void producePowerUps(){
+        Thread powerupThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int lagctr = 0;
+                int powerupLag = (new Random().nextInt(749 + 1 - 92)+92);
+                while(isPlay()){
+                    if(powUp!=null)
+                        powUp.updatePowerUp();
+                    if(lagctr >= powerupLag){
+                        powUp = new PowerUp(getAOP());
+                        getAOP().add(powUp);
+                        getAOP().setComponentZOrder(powUp, 0);
+                        lagctr=0;
+                        powerupLag = (new Random().nextInt(749 + 1 - 92)+92);
+                    }
+                    if(powUp!=null){
+                        if(!powUp.isAlive()){
+                            getAOP().remove(powUp);
+                            powUp = null;
+                        }
+                        updateUI();
+                    }
+                    lagctr++;
+
+                    try{
+                        Thread.sleep(90);
+                    } catch (InterruptedException e) {}
+                }
+            }
+        });  
+        powerupThread.start(); 
+    }
+    
     public void updateLevel(){
         this.upgrade.updateLevel(this.score.getScore());
     }
@@ -254,7 +307,14 @@ public class AOP extends JPanel{
         if(upgrade.getStarvationCount()<ANGER_IMG.getHeight())
             CURR_ANGER = ANGER_IMG.getSubimage(0, ANGER_IMG.getHeight()-upgrade.getStarvationCount()-1, ANGER_IMG.getWidth(), upgrade.getStarvationCount()+1);
         else
-            System.out.println("GAME OVER");//game over panel    
+            setGameOver(); 
+    }
+
+    public void setGameOver(){
+        setPlay(false);
+        GameOverPanel goPanel = new GameOverPanel(getAOP(), score, font);
+        getAOP().setVisible(false);
+        mainClass.add(goPanel);
     }
 
     public int getSpeed(){
@@ -308,6 +368,30 @@ public class AOP extends JPanel{
 
     public void reportError(String message, String title){
         new ErrorReport(mainClass, message, title);
+    }
+
+    public void resetGame(){
+        setAllProcessDead();
+        removeProcess();
+        for(Processor p : processors){
+            p.setAllBulletsDead();
+            p.removeBullet();
+        }
+        removeProcessor();
+        
+        score = new Score();
+        upgrade = new Upgrade(1, 5, 1000, 1);
+        processes = new ArrayList<Process>();
+        processors = new ArrayList<Processor>();
+        hasProcessor = new boolean[7];
+        
+        updateAngerIMG();    
+
+        processors.add(new Processor(this, upgrade, 135, 70));
+        hasProcessor[0] = true;
+        add(processors.get(0));
+        setPlay(false);
+        playBut.setEnabled(true);
     }
 
     @Override

@@ -40,7 +40,7 @@ public abstract class GameObject extends JLabel {
         this.currentPoint.move(x, y);
     }
 
-    public void setAlive(boolean alive){ //hit the process
+    public void setAlive(boolean alive){
         this.alive = alive;
     }
 
