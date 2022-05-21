@@ -1,4 +1,4 @@
-package ui;
+package aop.game;
 
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseAdapter;
@@ -20,7 +20,7 @@ public class Processor extends GameObject{
         this.upgrade = upgrade;
         this.lastLevelBulletUpdate = 0;
         accumLagBul = upgrade.getBulletLag();
-        IMG_PATH = "src/cpu.png";
+        IMG_PATH = "aop/src/cpu.png";
         setGameObject("cpu", x, y);
         setInitPoint(x, y);
 

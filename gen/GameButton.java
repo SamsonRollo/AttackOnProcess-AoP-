@@ -1,15 +1,15 @@
-package ui;
+package gen;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-public class AOPButton extends JButton{
+public class GameButton extends JButton{
  
-    public AOPButton(){
+    public GameButton(){
         setBorders();
     }
 
-    public AOPButton(int x, int y, int w, int h){
+    public GameButton(int x, int y, int w, int h){
         setBorders();
         setBounds(x,y,w,h); 
     }

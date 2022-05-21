@@ -1,4 +1,4 @@
-package ui;
+package aop.game;
 
 import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;

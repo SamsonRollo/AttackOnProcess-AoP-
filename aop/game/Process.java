@@ -1,4 +1,4 @@
-package ui;
+package aop.game;
 
 import java.util.ArrayList;
 import java.awt.Point;
@@ -7,8 +7,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import gen.ImageLoader;
+
 public class Process extends JPanel{
-    private final String[] PROC1_IMG_PATH = {"src/p1.png","src/p2.png"};
+    private final String[] PROC1_IMG_PATH = {"aop/src/p1.png","aop/src/p2.png"};
     private Point currentPoint;
     private ArrayList<ProcessBody> body;
     private ProcessTail tail;

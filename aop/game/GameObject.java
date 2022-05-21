@@ -1,7 +1,10 @@
-package ui;
+package aop.game;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+
+import gen.ImageLoader;
+
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;

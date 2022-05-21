@@ -1,6 +1,6 @@
-package exception;
+package aop.exception;
 
-import ui.MainClass;
+import gen.MainClass;
 
 public class ErrorReport{
 	

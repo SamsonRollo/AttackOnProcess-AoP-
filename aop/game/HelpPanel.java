@@ -1,7 +1,11 @@
-package ui;
+package aop.game;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import gen.GameButton;
+import gen.ImageLoader;
+
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
@@ -23,16 +27,16 @@ public class HelpPanel extends JPanel {
         setLayout(null);
         setBounds(0,0,700,500);
         setOpaque(false);
-        ImageLoader il = new ImageLoader("src/helpPanelOuter.png", "bgHelp");
+        ImageLoader il = new ImageLoader("aop/src/helpPanelOuter.png", "bgHelp");
         BG_IMG = il.getBuffImage();
-        il.reloadImage("src/helpContent.png", "content");
+        il.reloadImage("aop/src/helpContent.png", "content");
         CONTENT_IMG = il.getBuffImage();
 
-        AOPButton back = new AOPButton(600, 34, 84, 28);
+        GameButton back = new GameButton(600, 34, 84, 28);
 
         back.setIcons(
-            "src/normal/back.png",
-            "src/hilite/h_back.png",
+            "aop/src/normal/back.png",
+            "aop/src/hilite/h_back.png",
             "BACK"
         );
 

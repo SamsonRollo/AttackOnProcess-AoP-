@@ -1,9 +1,10 @@
-//move this to other package
-package ui;
+package gen;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
+
+import aop.game.AOP;
 
 public class MainClass extends JFrame{
     //private BufferedImage ICON_PATH = "src/tray_icon.png"
@@ -12,7 +13,7 @@ public class MainClass extends JFrame{
     	//setTrayIcon();
         setMinimumSize(new Dimension(700,500));
         setPreferredSize(new Dimension(700,500));
-        //setUndecorated(true);
+        setResizable(false);
 		getContentPane().setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         loadPanels();

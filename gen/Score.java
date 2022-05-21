@@ -1,4 +1,4 @@
-package ui;
+package gen;
 
 public class Score {
     private int score;

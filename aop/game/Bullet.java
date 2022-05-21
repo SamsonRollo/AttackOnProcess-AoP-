@@ -1,9 +1,9 @@
-package ui;
+package aop.game;
 
 public class Bullet extends GameObject{
     
     public Bullet(int bulletLevel, int x, int y){
-        IMG_PATH = "src/bullet"+bulletLevel+".png";
+        IMG_PATH = "aop/src/bullet"+bulletLevel+".png";
         setGameObject("bullet", x, y);
     }
 

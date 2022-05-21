@@ -1,5 +1,4 @@
-package ui;
-//package game.ui;
+package aop.game;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,7 +13,12 @@ import java.util.Iterator;
 import java.util.Random;
 import javax.swing.JPanel;
 
-import exception.ErrorReport;
+import aop.exception.ErrorReport;
+import gen.GameButton;
+import gen.ImageLoader;
+import gen.MainClass;
+import gen.Score;
+import gen.SpriteSheet;
 
 public class AOP extends JPanel{
     private Upgrade upgrade;
@@ -32,7 +36,7 @@ public class AOP extends JPanel{
     private SpriteSheet procBody;
     private SpriteSheet procTail;
     private SpriteSheet procStarve;
-    private AOPButton playBut;
+    private GameButton playBut;
     private Font font;
     private PowerUp powUp = null;
 
@@ -45,18 +49,18 @@ public class AOP extends JPanel{
     }
 
     public void loadElements(){
-        ImageLoader il = new ImageLoader("src/panel.png", "bg");
+        ImageLoader il = new ImageLoader("aop/src/panel.png", "bg");
         BG_IMG = il.getBuffImage();
-        il.reloadImage("src/anger.png", "anger");
+        il.reloadImage("aop/src/anger.png", "anger");
         ANGER_IMG = il.getBuffImage();
         il = null;
 
         font = new Font("sans_serif", Font.BOLD, 18);
         score = new Score();
         upgrade = new Upgrade(1, 5, 1000, 1);
-        procBody = new SpriteSheet("src/pbodysprite.png", 55, 44);
-        procTail = new SpriteSheet("src/ptailsprite.png", 55, 44);
-        procStarve = new SpriteSheet("src/starvesprite.png", 44, 44);
+        procBody = new SpriteSheet("aop/src/pbodysprite.png", 55, 44);
+        procTail = new SpriteSheet("aop/src/ptailsprite.png", 55, 44);
+        procStarve = new SpriteSheet("aop/src/starvesprite.png", 44, 44);
 
         updateAngerIMG();
 
@@ -71,35 +75,35 @@ public class AOP extends JPanel{
         for(int i=0, mult=55; i<7; i++)
             dropPoints[i] = new Rectangle(117, 67+mult*i, 81, 53);
 
-        playBut = new AOPButton(MENU_LOC_X, MENU_LOC_Y, 84, 28);
-        AOPButton pauseBut = new AOPButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL, 84, 28);
-        AOPButton upgradeBut = new AOPButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*2, 84, 28);
-        AOPButton helpBut = new AOPButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*3, 84, 28);
-        AOPButton quitBut = new AOPButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*4, 84, 28);
+        playBut = new GameButton(MENU_LOC_X, MENU_LOC_Y, 84, 28);
+        GameButton pauseBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL, 84, 28);
+        GameButton upgradeBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*2, 84, 28);
+        GameButton helpBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*3, 84, 28);
+        GameButton quitBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*4, 84, 28);
 
         playBut.setIcons(
-            "src/normal/play.png",
-            "src/hilite/h_play.png",
+            "aop/src/normal/play.png",
+            "aop/src/hilite/h_play.png",
             "PLAY"
         );
         pauseBut.setIcons(
-            "src/normal/pause.png",
-            "src/hilite/h_pause.png",
+            "aop/src/normal/pause.png",
+            "aop/src/hilite/h_pause.png",
             "PAUSE"
         );
         upgradeBut.setIcons(
-            "src/normal/upgrade.png",
-            "src/hilite/h_upgrade.png",
+            "aop/src/normal/upgrade.png",
+            "aop/src/hilite/h_upgrade.png",
             "UPGRADE"
         );
         helpBut.setIcons(
-            "src/normal/help.png",
-            "src/hilite/h_help.png",
+            "aop/src/normal/help.png",
+            "aop/src/hilite/h_help.png",
             "HELP"
         );
         quitBut.setIcons(
-            "src/normal/quit.png",
-            "src/hilite/h_quit.png",
+            "aop/src/normal/quit.png",
+            "aop/src/hilite/h_quit.png",
             "QUIT"
         );
 

@@ -1,6 +1,11 @@
-package ui;
+package aop.game;
 
 import javax.swing.JPanel;
+
+import gen.GameButton;
+import gen.ImageLoader;
+import gen.Score;
+
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -25,14 +30,14 @@ public class GameOverPanel extends JPanel {
         setLayout(null);
         setBounds(0,0,700,500);
         setOpaque(false);
-        ImageLoader il = new ImageLoader("src/gameoverPanel.png", "bggameover");
+        ImageLoader il = new ImageLoader("aop/src/gameoverPanel.png", "bggameover");
         BG_IMG = il.getBuffImage();
 
-        AOPButton back = new AOPButton(600, 34, 84, 28);
+        GameButton back = new GameButton(600, 34, 84, 28);
 
         back.setIcons(
-            "src/normal/back.png",
-            "src/hilite/h_back.png",
+            "aop/src/normal/back.png",
+            "aop/src/hilite/h_back.png",
             "BACK"
         );
 

@@ -1,6 +1,6 @@
-package ui;
+package aop.game;
 
-import exception.*;
+import aop.exception.*;
 import java.awt.Rectangle;
 
 public class Upgrade {
@@ -8,7 +8,6 @@ public class Upgrade {
     private int speedPowerup;
     private int numberOfCores;
     private int bulletLag;
-    private int processLag;
     private int level;
     private int bulletLevel;
     private int starvation;

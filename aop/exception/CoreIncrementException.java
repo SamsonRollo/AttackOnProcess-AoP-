@@ -1,4 +1,4 @@
-package exception;
+package aop.exception;
 
 public class CoreIncrementException extends Exception{
 	public CoreIncrementException(String message){

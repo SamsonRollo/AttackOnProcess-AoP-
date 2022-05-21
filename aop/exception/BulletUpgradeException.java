@@ -1,4 +1,4 @@
-package exception;
+package aop.exception;
 
 public class BulletUpgradeException extends Exception{
 	public BulletUpgradeException(String message){

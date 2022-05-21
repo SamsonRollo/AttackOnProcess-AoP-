@@ -1,4 +1,4 @@
-package ui;
+package gen;
 
 import java.awt.image.BufferedImage;
 

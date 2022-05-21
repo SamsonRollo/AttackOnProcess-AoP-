@@ -1,6 +1,10 @@
-package ui;
+package aop.game;
 
 import javax.swing.JPanel;
+
+import gen.GameButton;
+import gen.ImageLoader;
+
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.Font;
@@ -27,32 +31,32 @@ public class UpgradePanel extends JPanel {
         setLayout(null);
         setBounds(0,0,700,500);
         setOpaque(false);
-        ImageLoader il = new ImageLoader("src/upgradePanel.png", "upgradePanel");
+        ImageLoader il = new ImageLoader("aop/src/upgradePanel.png", "upgradePanel");
         IMAGE = il.getBuffImage();
-        il.reloadImage("src/cpu.png", "cpu");
+        il.reloadImage("aop/src/cpu.png", "cpu");
         coreImage = il.getBuffImage();
-        il.reloadImage("src/bullet"+upgrade.getBulletLevel()+".png", "bullet");
+        il.reloadImage("aop/src/bullet"+upgrade.getBulletLevel()+".png", "bullet");
         bulletImage = il.getBuffImage();
 
-        AOPButton buyCPU = new AOPButton(340, 172, 84, 28);
-        AOPButton buyBullet = new AOPButton(389, 298, 84, 28);
-        AOPButton back = new AOPButton(600, 34, 84, 28);
+        GameButton buyCPU = new GameButton(340, 172, 84, 28);
+        GameButton buyBullet = new GameButton(389, 298, 84, 28);
+        GameButton back = new GameButton(600, 34, 84, 28);
 
         buyCPU.setIcons(
-            "src/normal/buy.png",
-            "src/hilite/h_buy.png",
+            "aop/src/normal/buy.png",
+            "aop/src/hilite/h_buy.png",
             "BUYCPU"
         );
 
         buyBullet.setIcons(
-            "src/normal/buy.png",
-            "src/hilite/h_buy.png",
+            "aop/src/normal/buy.png",
+            "aop/src/hilite/h_buy.png",
             "BUYBullet"
         );
 
         back.setIcons(
-            "src/normal/back.png",
-            "src/hilite/h_back.png",
+            "aop/src/normal/back.png",
+            "aop/src/hilite/h_back.png",
             "BACK"
         );
 
@@ -103,7 +107,7 @@ public class UpgradePanel extends JPanel {
     }
 
     public void updateBulletImage(){
-        ImageLoader il = new ImageLoader("src/bullet"+upgrade.getBulletLevel()+".png", "bullet");
+        ImageLoader il = new ImageLoader("aop/src/bullet"+upgrade.getBulletLevel()+".png", "bullet");
         bulletImage = il.getBuffImage();
         repaint();
     }

@@ -1,4 +1,4 @@
-package ui;
+package aop.game;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ public class PowerUp extends GameObject{
 
     public PowerUp(AOP aop){
         this.aop = aop;
-        IMG_PATH = "src/powerup.png";
+        IMG_PATH = "aop/src/powerup.png";
         setGameObject("powerup", randomizeXPos(), 63);
         
         selectedPowerUp = new Random().nextInt(101);
