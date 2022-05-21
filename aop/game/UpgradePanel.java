@@ -42,23 +42,9 @@ public class UpgradePanel extends JPanel {
         GameButton buyBullet = new GameButton(389, 298, 84, 28);
         GameButton back = new GameButton(308, 392, 84, 28);
 
-        buyCPU.setIcons(
-            "aop/src/normal/buy.png",
-            "aop/src/hilite/h_buy.png",
-            "BUYCPU"
-        );
-
-        buyBullet.setIcons(
-            "aop/src/normal/buy.png",
-            "aop/src/hilite/h_buy.png",
-            "BUYBullet"
-        );
-
-        back.setIcons(
-            "aop/src/normal/back.png",
-            "aop/src/hilite/h_back.png",
-            "BACK"
-        );
+        autoSetIcons(buyCPU, "buy");
+        autoSetIcons(buyBullet, "buy");
+        autoSetIcons(back, "back");
 
         buyCPU.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
@@ -114,6 +100,14 @@ public class UpgradePanel extends JPanel {
 
     public JPanel getPanel(){
         return this;
+    }
+
+    private void autoSetIcons(GameButton button, String name){
+        button.setIcons(
+            "aop/src/normal/"+name+".png",
+            "aop/src/hilite/h_"+name+".png",
+            name.toUpperCase()
+        );
     }
 
     @Override

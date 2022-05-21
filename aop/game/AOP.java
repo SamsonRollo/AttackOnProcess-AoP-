@@ -85,32 +85,12 @@ public class AOP extends JPanel{
         GameButton helpBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*3, 84, 28);
         GameButton quitBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*4, 84, 28);
 
-        playBut.setIcons(
-            "aop/src/normal/play.png",
-            "aop/src/hilite/h_play.png",
-            "PLAY"
-        );
-        pauseBut.setIcons(
-            "aop/src/normal/pause.png",
-            "aop/src/hilite/h_pause.png",
-            "PAUSE"
-        );
-        upgradeBut.setIcons(
-            "aop/src/normal/upgrade.png",
-            "aop/src/hilite/h_upgrade.png",
-            "UPGRADE"
-        );
-        helpBut.setIcons(
-            "aop/src/normal/help.png",
-            "aop/src/hilite/h_help.png",
-            "HELP"
-        );
-        quitBut.setIcons(
-            "aop/src/normal/quit.png",
-            "aop/src/hilite/h_quit.png",
-            "QUIT"
-        );
-
+        autoSetIcons(playBut, "play");
+        autoSetIcons(pauseBut, "pause");
+        autoSetIcons(upgradeBut, "upgrade");
+        autoSetIcons(helpBut, "help");
+        autoSetIcons(quitBut, "quit");
+        
         playBut.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 loadInitImage();
@@ -400,6 +380,14 @@ public class AOP extends JPanel{
 
     public void reportError(String message, String title){
         new ErrorReport(mainClass, message, title);
+    }
+
+    private void autoSetIcons(GameButton button, String name){
+        button.setIcons(
+            "aop/src/normal/"+name+".png",
+            "aop/src/hilite/h_"+name+".png",
+            name.toUpperCase()
+        );
     }
 
     public void resetGame(){
