@@ -49,7 +49,9 @@ public class PowerUp extends GameObject{
                 Process process = iterator.next();
                 if(iter==victim){
                     iterator.remove();
+                    aop.getProcessesLane()[process.getLane()]--;
                     aop.remove(process);
+                    process = null;
                 }
                 iter++;
             }

@@ -57,6 +57,10 @@ public abstract class GameObject extends JLabel {
         return this.velocity;
     }
 
+    protected void setVelocity(int velocity){
+        this.velocity = velocity;
+    }
+
     protected void incrementVelocity(){
         this.velocity++;
     }

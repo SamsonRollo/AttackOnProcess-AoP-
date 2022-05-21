@@ -14,11 +14,14 @@ public class Processor extends GameObject{
     private Upgrade upgrade;
     private int accumLagBul;
     private int lastLevelBulletUpdate;
+    private int bulletSpeed = 2;
+    private int lane;
 
     public Processor(AOP aop, Upgrade upgrade, int x, int y){
         this.aop = aop;
         this.upgrade = upgrade;
         this.lastLevelBulletUpdate = 0;
+        this.lane = calculateLane(y);
         accumLagBul = upgrade.getBulletLag();
         IMG_PATH = "aop/src/cpu.png";
         setGameObject("cpu", x, y);
@@ -47,6 +50,7 @@ public class Processor extends GameObject{
                 setInitPoint(drop);
                 setCurrentPoint(drop);
                 setDragged(false);
+                setLane(calculateLane(getY()));
             }
         });
 
@@ -60,7 +64,7 @@ public class Processor extends GameObject{
             public void run() {
                 while(aop.isPlay()){
                     updateBullets();
-                    if(accumLagBul>= upgrade.getBulletLag()){
+                    if(accumLagBul>= upgrade.getBulletLag() && aop.getProcessesLane()[lane]>0){
                         createBullet();
                         accumLagBul = 0;
                     }
@@ -79,12 +83,15 @@ public class Processor extends GameObject{
 
     public void updateBullets(){
         for(Bullet b : bullets){
-            if(upgrade.getLevel()%2==0 && upgrade.getLevel()>this.lastLevelBulletUpdate){
-                b.incrementVelocity();
-                this.lastLevelBulletUpdate = upgrade.getLevel();
-            }
+            b.setVelocity(bulletSpeed);
             b.updateBullet();
             aop.processHit(b);
+        }
+        if(this.bulletSpeed<6 && upgrade.getLevel()%3==0 && upgrade.getLevel()>this.lastLevelBulletUpdate){
+            this.bulletSpeed++;
+            if(upgrade.getLevel()%6==0)
+                upgrade.decrementBulletLag(2);
+            this.lastLevelBulletUpdate = upgrade.getLevel();
         }
     }
 
@@ -117,6 +124,18 @@ public class Processor extends GameObject{
     public void setAllBulletsDead(){
         for(Bullet b : bullets)
             b.setAlive(false);
+    }
+
+    public int calculateLane(int y){
+        return (int)Math.floor((y-70)/55);
+    }
+
+    public int getLane(){
+        return this.lane;
+    }
+
+    public void setLane(int lane){
+        this.lane = lane;
     }
 
     public void setDragged(boolean dragged){

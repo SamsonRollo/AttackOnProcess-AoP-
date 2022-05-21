@@ -40,7 +40,7 @@ public class UpgradePanel extends JPanel {
 
         GameButton buyCPU = new GameButton(340, 172, 84, 28);
         GameButton buyBullet = new GameButton(389, 298, 84, 28);
-        GameButton back = new GameButton(600, 34, 84, 28);
+        GameButton back = new GameButton(308, 392, 84, 28);
 
         buyCPU.setIcons(
             "aop/src/normal/buy.png",

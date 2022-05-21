@@ -23,6 +23,7 @@ public class Process extends JPanel{
     private JLabel head;
     private int spriteIdx = 0;
     private int spriteLag = 0;
+    private int lane;
 
     public Process(AOP aop, int level, int x, int y, int h){
         this.aop = aop;
@@ -31,6 +32,7 @@ public class Process extends JPanel{
         loadElements(level);
         setH(h);
         setCurrentPoint(x, y);
+        setLane(calculateLane(y));
         setBounds(getX(), getY(), getW(), getH());
     }
 
@@ -103,6 +105,18 @@ public class Process extends JPanel{
 
     public int getProcessScore(){
         return this.score;
+    }
+
+    public int calculateLane(int y){
+        return (int)Math.floor((y-70)/55);
+    }
+
+    public int getLane(){
+        return this.lane;
+    }
+
+    public void setLane(int lane){
+        this.lane = lane;
     }
 
     public Rectangle getRectangle(){

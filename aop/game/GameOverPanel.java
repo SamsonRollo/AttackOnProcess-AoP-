@@ -33,7 +33,7 @@ public class GameOverPanel extends JPanel {
         ImageLoader il = new ImageLoader("aop/src/gameoverPanel.png", "bggameover");
         BG_IMG = il.getBuffImage();
 
-        GameButton back = new GameButton(600, 34, 84, 28);
+        GameButton back = new GameButton(308, 320, 84, 28);
 
         back.setIcons(
             "aop/src/normal/back.png",

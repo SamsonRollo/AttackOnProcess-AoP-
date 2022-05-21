@@ -57,11 +57,13 @@ public class Upgrade {
     }
 
     public void decrementBulletLag(){
-        this.bulletLag--;
+        if(bulletLag>=400)
+            this.bulletLag--;
     }
 
     public void decrementBulletLag(int bulletLag){
-        this.bulletLag+=bulletLag;
+        if(bulletLag>=400)
+            this.bulletLag-=bulletLag;
     }
 
     public int getBulletLag(){
@@ -139,13 +141,13 @@ public class Upgrade {
     public int getCoreCost(){
         if(numberOfCores>=4)
             return 0;
-        return this.numberOfCores * 421 + 12;
+        return this.numberOfCores * 187 + 12;
     }
 
     public int getBulletCost(){
         if(bulletLevel>=3)
             return 0;
-        return this.bulletLevel * 512 + 13;
+        return this.bulletLevel * 312 + 13;
     }
 
     public String getCoreCostStr(){

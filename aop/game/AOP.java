@@ -27,16 +27,17 @@ public class AOP extends JPanel{
     private final int MENU_LOC_Y = 67;
     private final int MENU_LOC_MUL = 32;
     private MainClass mainClass;
-    private BufferedImage BG_IMG, ANGER_IMG, CURR_ANGER;
+    private BufferedImage BG_IMG, ANGER_IMG, CURR_ANGER, INIT_IMG;
     private ArrayList<Process> processes;
     private ArrayList<Processor> processors;
     private Rectangle[] dropPoints;
     private boolean[] hasProcessor;
+    private int[] processLane;
     private boolean playBoolean = false;
     private SpriteSheet procBody;
     private SpriteSheet procTail;
     private SpriteSheet procStarve;
-    private GameButton playBut;
+    private GameButton playBut, pauseBut;
     private Font font;
     private PowerUp powUp = null;
 
@@ -55,6 +56,8 @@ public class AOP extends JPanel{
         ANGER_IMG = il.getBuffImage();
         il = null;
 
+        INIT_IMG = null;
+
         font = new Font("sans_serif", Font.BOLD, 18);
         score = new Score();
         upgrade = new Upgrade(1, 5, 1000, 1);
@@ -68,6 +71,7 @@ public class AOP extends JPanel{
         processors = new ArrayList<Processor>();
         hasProcessor = new boolean[7];
         dropPoints = new Rectangle[7];
+        processLane = new int[7];
 
         processors.add(new Processor(this, upgrade, 135, 70));
         hasProcessor[0] = true;
@@ -76,7 +80,7 @@ public class AOP extends JPanel{
             dropPoints[i] = new Rectangle(117, 67+mult*i, 81, 53);
 
         playBut = new GameButton(MENU_LOC_X, MENU_LOC_Y, 84, 28);
-        GameButton pauseBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL, 84, 28);
+        pauseBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL, 84, 28);
         GameButton upgradeBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*2, 84, 28);
         GameButton helpBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*3, 84, 28);
         GameButton quitBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL*4, 84, 28);
@@ -109,6 +113,7 @@ public class AOP extends JPanel{
 
         playBut.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
+                loadInitImage();
                 playingStatus(true);
             }
         });
@@ -116,6 +121,9 @@ public class AOP extends JPanel{
         pauseBut.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 playingStatus(false);
+                PausePanel ppanel = new PausePanel(getAOP());
+                getAOP().setVisible(false);
+                mainClass.add(ppanel);
             }
         });
 
@@ -145,6 +153,8 @@ public class AOP extends JPanel{
             }
         });
 
+        pauseBut.setEnabled(false);
+
         add(processors.get(0));
         add(playBut);
         add(pauseBut);
@@ -156,6 +166,7 @@ public class AOP extends JPanel{
     public void playingStatus(boolean status){
         setPlay(status);
         playBut.setEnabled(!status);
+        pauseBut.setEnabled(status);
         if(status){
             producePowerUps();
             for(Processor p : processors)
@@ -176,12 +187,14 @@ public class AOP extends JPanel{
         Thread processThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                int accumLagProc = upgrade.getProcessLag();
+                int accumLagProc = upgrade.getProcessLag()-100;
                 while(isPlay()){
                     updateProcess();
                     if(accumLagProc >= upgrade.getProcessLag()){
                         createProcesses();
                         accumLagProc=0;
+                        if(INIT_IMG!=null)
+                            INIT_IMG = null;
                     }
                     removeProcess();
                     updateUI();
@@ -208,6 +221,7 @@ public class AOP extends JPanel{
         
         if(!intersectProcess((int)lane.getY()+3)){
             Process p = new Process(getAOP(), upgrade.getLevel(), spawnX, (int)lane.getY()+3, 44);
+            processLane[idx]++;
             processes.add(p);
             add(p);
         }
@@ -225,14 +239,18 @@ public class AOP extends JPanel{
             Process process = iterator.next();
             if(!process.isAlive()){
                 iterator.remove();
+                processLane[process.getLane()]--;
                 remove(process);
+                process = null;
             }
         }
     }
 
     public void setAllProcessDead(){
-        for(Process p : processes)
+        for(Process p : processes){
+            processLane[p.getLane()]--;
             p.setAlive(false);
+        }
     }
 
     public void removeProcessor(){
@@ -240,6 +258,7 @@ public class AOP extends JPanel{
             Processor processor = iterator.next();
             iterator.remove();
             remove(processor);
+            processor = null;
         }
     }
 
@@ -314,11 +333,20 @@ public class AOP extends JPanel{
             setGameOver(); 
     }
 
+    public void loadInitImage(){
+        ImageLoader il = new ImageLoader("aop/src/proccoming.png", "proc");
+        INIT_IMG = il.getBuffImage();
+    }
+
     public void setGameOver(){
         setPlay(false);
         GameOverPanel goPanel = new GameOverPanel(getAOP(), score, font);
         getAOP().setVisible(false);
         mainClass.add(goPanel);
+    }
+
+    public int[] getProcessesLane(){
+        return this.processLane;
     }
 
     public int getSpeed(){
@@ -388,6 +416,7 @@ public class AOP extends JPanel{
         processes = new ArrayList<Process>();
         processors = new ArrayList<Processor>();
         hasProcessor = new boolean[7];
+        processLane =  new int[7];
         
         updateAngerIMG();    
 
@@ -396,6 +425,7 @@ public class AOP extends JPanel{
         add(processors.get(0));
         setPlay(false);
         playBut.setEnabled(true);
+        pauseBut.setEnabled(false);
     }
 
     @Override
@@ -404,6 +434,9 @@ public class AOP extends JPanel{
 
         g.drawImage(BG_IMG, 0, 0, null);
         g.drawImage(CURR_ANGER, 31, 248+ANGER_IMG.getHeight()-CURR_ANGER.getHeight(), null); 
+
+        if(INIT_IMG!=null)
+            g.drawImage(INIT_IMG, 267, 133, null);
 
         g.setColor(Color.white);
         g.setFont(font);
