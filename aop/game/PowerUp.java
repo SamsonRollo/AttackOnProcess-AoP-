@@ -14,7 +14,7 @@ public class PowerUp extends GameObject{
     public PowerUp(AOP aop){
         this.aop = aop;
         IMG_PATH = "aop/src/powerup.png";
-        setGameObject("powerup", randomizeXPos(), 63);
+        setGameObject("powerup", randomizeXPos(), 81);
         
         selectedPowerUp = new Random().nextInt(101);
         
@@ -69,7 +69,7 @@ public class PowerUp extends GameObject{
     }
 
     protected boolean calculateAlive() {
-        if(getY()+getH()>=452)
+        if(getY()+getH()>=476)
             return false;
         return true;
     }

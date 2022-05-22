@@ -33,7 +33,7 @@ public class HelpPanel extends JPanel {
         il.reloadImage("aop/src/helpContent.png", "content");
         CONTENT_IMG = il.getBuffImage();
 
-        GameButton back = new GameButton(308, 397, 84, 28);
+        GameButton back = new GameButton(308, 413, 84, 28);
 
         back.setIcons(
             "aop/src/normal/back.png",
@@ -61,7 +61,7 @@ public class HelpPanel extends JPanel {
         contentPanel.setPreferredSize(new Dimension(CONTENT_IMG.getWidth(), CONTENT_IMG.getHeight()));
 
         JScrollPane jsp = new JScrollPane(contentPanel);
-        jsp.setBounds(131, 25, 439, 364);
+        jsp.setBounds(131, 25, 439, 375);
         jsp.setBorder(BorderFactory.createEmptyBorder());
         add(jsp);
         add(back);

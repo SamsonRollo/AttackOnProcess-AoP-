@@ -24,7 +24,7 @@ public class AOP extends JPanel{
     private Upgrade upgrade;
     private Score score;
     private final int MENU_LOC_X = 16;
-    private final int MENU_LOC_Y = 67;
+    private final int MENU_LOC_Y = 85;
     private final int MENU_LOC_MUL = 32;
     private MainClass mainClass;
     private BufferedImage BG_IMG, ANGER_IMG, CURR_ANGER, INIT_IMG;
@@ -73,11 +73,11 @@ public class AOP extends JPanel{
         dropPoints = new Rectangle[7];
         processLane = new int[7];
 
-        processors.add(new Processor(this, upgrade, 135, 70));
+        processors.add(new Processor(this, upgrade, 135, 88));
         hasProcessor[0] = true;
 
-        for(int i=0, mult=55; i<7; i++)
-            dropPoints[i] = new Rectangle(117, 67+mult*i, 81, 53);
+        for(int i=0, mult=56; i<7; i++)
+            dropPoints[i] = new Rectangle(117, 85+mult*i, 81, 53);
 
         playBut = new GameButton(MENU_LOC_X, MENU_LOC_Y, 84, 28);
         pauseBut = new GameButton(MENU_LOC_X, MENU_LOC_Y+MENU_LOC_MUL, 84, 28);
@@ -129,7 +129,11 @@ public class AOP extends JPanel{
 
         quitBut.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //record score and back to main menu
+                boolean playBol = isPlay();
+                setPlay(false);
+                QuitPanel qPanel = new QuitPanel(getAOP(), playBol);
+                getAOP().setVisible(false);
+                mainClass.add(qPanel);
             }
         });
 
@@ -408,7 +412,7 @@ public class AOP extends JPanel{
         
         updateAngerIMG();    
 
-        processors.add(new Processor(this, upgrade, 135, 70));
+        processors.add(new Processor(this, upgrade, 135, 88));
         hasProcessor[0] = true;
         add(processors.get(0));
         setPlay(false);
@@ -421,13 +425,13 @@ public class AOP extends JPanel{
         super.paintComponent(g);
 
         g.drawImage(BG_IMG, 0, 0, null);
-        g.drawImage(CURR_ANGER, 31, 248+ANGER_IMG.getHeight()-CURR_ANGER.getHeight(), null); 
+        g.drawImage(CURR_ANGER, 31, 284+ANGER_IMG.getHeight()-CURR_ANGER.getHeight(), null); 
 
         if(INIT_IMG!=null)
-            g.drawImage(INIT_IMG, 267, 133, null);
+            g.drawImage(INIT_IMG, 267, 151, null);
 
         g.setColor(Color.white);
         g.setFont(font);
-        g.drawString(String.valueOf(score.getScore()), 583, 45);
+        g.drawString(String.valueOf(score.getScore()), 583, 53);
     }
 }

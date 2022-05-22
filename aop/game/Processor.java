@@ -127,7 +127,7 @@ public class Processor extends GameObject{
     }
 
     public int calculateLane(int y){
-        return (int)Math.floor((y-70)/55);
+        return (int)Math.floor((y-88)/56);
     }
 
     public int getLane(){

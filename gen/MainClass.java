@@ -11,8 +11,8 @@ public class MainClass extends JFrame{
 
     public MainClass(){
     	//setTrayIcon();
-        setMinimumSize(new Dimension(700,500));
-        setPreferredSize(new Dimension(700,500));
+        getContentPane().setMinimumSize(new Dimension(700,500));
+        getContentPane().setPreferredSize(new Dimension(700,500));
         setResizable(false);
 		getContentPane().setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
