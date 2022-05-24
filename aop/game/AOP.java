@@ -281,22 +281,19 @@ public class AOP extends JPanel{
                 while(isPlay()){
                     if(powUp!=null)
                         powUp.updatePowerUp();
-                    if(lagctr >= powerupLag){
+                    if(lagctr >= powerupLag && powUp==null){
                         powUp = new PowerUp(getAOP());
                         getAOP().add(powUp);
                         getAOP().setComponentZOrder(powUp, 0);
                         lagctr=0;
                         powerupLag = (new Random().nextInt(749 + 1 - 92)+92);
                     }
-                    if(powUp!=null){
-                        if(!powUp.isAlive()){
-                            getAOP().remove(powUp);
-                            powUp = null;
-                        }
-                        updateUI();
+                    if(powUp!=null && !powUp.isAlive()){
+                        getAOP().remove(powUp);
+                        powUp = null;
+                        getAOP().updateUI();
                     }
                     lagctr++;
-
                     try{
                         Thread.sleep(90);
                     } catch (InterruptedException e) {}
@@ -395,6 +392,7 @@ public class AOP extends JPanel{
     }
 
     public void resetGame(){
+        powUp = null;
         setAllProcessDead();
         removeProcess();
         for(Processor p : processors){

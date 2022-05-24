@@ -4,10 +4,6 @@ import javax.swing.JPanel;
 
 import gen.GameButton;
 import gen.ImageLoader;
-import gen.Score;
-
-import java.awt.Font;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
